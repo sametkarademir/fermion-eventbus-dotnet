@@ -1,0 +1,35 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{E194F831-BA6E-4E44-8A37-D01481C3A5B5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fermion.EventBus.Base", "src\Fermion.EventBus.Base\Fermion.EventBus.Base.csproj", "{4D13D1F9-7901-4F8A-8F55-E8777DE9399A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fermion.EventBus.RabbitMq", "src\Fermion.EventBus.RabbitMq\Fermion.EventBus.RabbitMq.csproj", "{0FFF7667-617C-49B8-A305-CC7F4BC5C072}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fermion.EventBus.Factory", "src\Fermion.EventBus.Factory\Fermion.EventBus.Factory.csproj", "{9599BC80-4391-4BED-B1A1-B456759CFBBF}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{4D13D1F9-7901-4F8A-8F55-E8777DE9399A} = {E194F831-BA6E-4E44-8A37-D01481C3A5B5}
+		{0FFF7667-617C-49B8-A305-CC7F4BC5C072} = {E194F831-BA6E-4E44-8A37-D01481C3A5B5}
+		{9599BC80-4391-4BED-B1A1-B456759CFBBF} = {E194F831-BA6E-4E44-8A37-D01481C3A5B5}
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4D13D1F9-7901-4F8A-8F55-E8777DE9399A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4D13D1F9-7901-4F8A-8F55-E8777DE9399A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4D13D1F9-7901-4F8A-8F55-E8777DE9399A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4D13D1F9-7901-4F8A-8F55-E8777DE9399A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0FFF7667-617C-49B8-A305-CC7F4BC5C072}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0FFF7667-617C-49B8-A305-CC7F4BC5C072}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0FFF7667-617C-49B8-A305-CC7F4BC5C072}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0FFF7667-617C-49B8-A305-CC7F4BC5C072}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9599BC80-4391-4BED-B1A1-B456759CFBBF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9599BC80-4391-4BED-B1A1-B456759CFBBF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9599BC80-4391-4BED-B1A1-B456759CFBBF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9599BC80-4391-4BED-B1A1-B456759CFBBF}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
