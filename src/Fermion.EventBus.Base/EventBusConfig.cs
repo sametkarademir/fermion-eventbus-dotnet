@@ -29,7 +29,7 @@ public class EventBusConfig
             _config.DefaultTopicName = topicName;
             return this;
         }
-        
+
         public Builder WithSubscriberClientAppName(string appName)
         {
             _config.SubscriberClientAppName = appName;

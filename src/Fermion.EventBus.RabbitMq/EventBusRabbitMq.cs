@@ -63,7 +63,7 @@ public class EventBusRabbitMq : BaseEventBus
     }
 
     public RabbitMqPersistentConnection GetPersistentConnection() => _persistentConnection;
-    
+
     private void SubsManagerOnOnEventRemoved(object? sender, string eventName)
     {
         _logger.LogInformation("Event removed from subscription manager: {EventName}", eventName);

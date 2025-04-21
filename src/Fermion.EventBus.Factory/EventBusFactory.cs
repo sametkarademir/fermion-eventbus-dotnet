@@ -23,7 +23,7 @@ public static class EventBusFactory
     {
         if (eventBus is EventBusRabbitMq rabbitMqEventBus)
         {
-            return new RabbitMqEventBusHealthCheck(rabbitMqEventBus.GetPersistentConnection(), 
+            return new RabbitMqEventBusHealthCheck(rabbitMqEventBus.GetPersistentConnection(),
                 serviceProvider.GetRequiredService<ILogger<RabbitMqEventBusHealthCheck>>());
         }
         throw new ArgumentException("Health check is only supported for RabbitMQ EventBus");

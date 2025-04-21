@@ -9,9 +9,9 @@ public class InMemoryEventBusSubscriptionManager : IEventBusSubscriptionManager
     private readonly Dictionary<string, List<SubscriptionInfo>> _handlers;
     private readonly List<Type> _eventTypes;
     private readonly Func<string, string> _eventNameGetter;
-    
+
     public event EventHandler<string>? OnEventRemoved;
-    
+
     public InMemoryEventBusSubscriptionManager(Func<string, string> eventNameGetter)
     {
         _handlers = new Dictionary<string, List<SubscriptionInfo>>();
@@ -92,7 +92,7 @@ public class InMemoryEventBusSubscriptionManager : IEventBusSubscriptionManager
         {
             throw new EventBusSubscriptionException($"No subscription for event {eventName} exists");
         }
-        return _handlers[eventName].SingleOrDefault(s => s.HandlerType == handlerType) 
+        return _handlers[eventName].SingleOrDefault(s => s.HandlerType == handlerType)
                ?? throw new EventBusSubscriptionException($"Handler Type {handlerType.Name} not found for '{eventName}'");
     }
 

@@ -34,12 +34,12 @@ public abstract class BaseEventBus : IEventBus
 
         return eventName;
     }
-    
+
     protected string GetSubName(string eventName)
     {
         return $"{EventBusConfig.SubscriberClientAppName}.{ProcessEventName(eventName)}";
     }
-    
+
     public virtual void Dispose()
     {
         EventBusConfig = null;

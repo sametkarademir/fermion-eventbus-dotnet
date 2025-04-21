@@ -7,13 +7,13 @@ public class RabbitMqEventBusHealthCheck : IEventBusHealthCheck
 {
     private readonly RabbitMqPersistentConnection _connection;
     private readonly ILogger<RabbitMqEventBusHealthCheck> _logger;
-    
+
     public RabbitMqEventBusHealthCheck(RabbitMqPersistentConnection connection, ILogger<RabbitMqEventBusHealthCheck> logger)
     {
         _connection = connection;
         _logger = logger;
     }
-    
+
     public async Task<HealthCheckResult> CheckHealthAsync(CancellationToken cancellationToken = default)
     {
         try
@@ -21,7 +21,7 @@ public class RabbitMqEventBusHealthCheck : IEventBusHealthCheck
             if (_connection.IsConnected)
             {
                 using var channel = _connection.CreateModel();
-                
+
                 return HealthCheckResult.Healthy("RabbitMQ connection is healthy");
             }
 
