@@ -4,11 +4,25 @@
         <TargetFramework>net8.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+
+        <PackageId>Fermion.EventBus.Factory</PackageId>
+        <Version>0.0.1</Version>
+        <Authors>Samet Karademir</Authors>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <RepositoryUrl>https://github.com/sametkarademir/fermion-eventbus-dotnet</RepositoryUrl>
+        <PackageReadmeFile>readme.md</PackageReadmeFile>
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Fermion.EventBus.Base\Fermion.EventBus.Base.csproj" />
-      <ProjectReference Include="..\Fermion.EventBus.RabbitMq\Fermion.EventBus.RabbitMq.csproj" />
+        <None Update="readme.md">
+            <Pack>true</Pack>
+            <PackagePath>/</PackagePath>
+        </None>
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Fermion.EventBus.Base" Version="0.0.1" />
+      <PackageReference Include="Fermion.EventBus.RabbitMq" Version="0.0.1" />
     </ItemGroup>
 
 </Project>
