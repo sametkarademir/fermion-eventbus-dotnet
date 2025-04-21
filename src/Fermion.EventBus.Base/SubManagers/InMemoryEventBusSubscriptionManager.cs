@@ -1,5 +1,6 @@
 using Fermion.EventBus.Base.Abstraction;
 using Fermion.EventBus.Base.Events;
+using Fermion.EventBus.Base.Exceptions;
 
 namespace Fermion.EventBus.Base.SubManagers;
 
@@ -7,16 +8,15 @@ public class InMemoryEventBusSubscriptionManager : IEventBusSubscriptionManager
 {
     private readonly Dictionary<string, List<SubscriptionInfo>> _handlers;
     private readonly List<Type> _eventTypes;
-
+    private readonly Func<string, string> _eventNameGetter;
+    
     public event EventHandler<string>? OnEventRemoved;
-    public Func<string, string> eventNameGetter;
-
-
+    
     public InMemoryEventBusSubscriptionManager(Func<string, string> eventNameGetter)
     {
         _handlers = new Dictionary<string, List<SubscriptionInfo>>();
         _eventTypes = new List<Type>();
-        this.eventNameGetter = eventNameGetter;
+        _eventNameGetter = eventNameGetter;
     }
 
     public bool IsEmpty => !_handlers.Keys.Any();
@@ -39,7 +39,7 @@ public class InMemoryEventBusSubscriptionManager : IEventBusSubscriptionManager
         }
         if (_handlers[eventName].Any(s => s.HandlerType == handlerType))
         {
-            throw new AggregateException($"Handler Type {handlerType.Name} already registered for '{eventName}'");
+            throw new EventBusSubscriptionException($"Handler Type {handlerType.Name} already registered for '{eventName}'");
         }
         _handlers[eventName].Add(SubscriptionInfo.Typed(handlerType));
     }
@@ -54,21 +54,18 @@ public class InMemoryEventBusSubscriptionManager : IEventBusSubscriptionManager
 
     private void RemoveHandler(string eventName, SubscriptionInfo subsToRemove)
     {
-        if (subsToRemove != null)
+        _handlers[eventName].Remove(subsToRemove);
+
+        if (!_handlers[eventName].Any())
         {
-            _handlers[eventName].Remove(subsToRemove);
-
-            if (!_handlers[eventName].Any())
+            _handlers.Remove(eventName);
+            var eventType = _eventTypes.SingleOrDefault(e => e.Name == eventName);
+            if (eventType != null)
             {
-                _handlers.Remove(eventName);
-                var eventType = _eventTypes.SingleOrDefault(e => e.Name == eventName);
-                if (eventType != null)
-                {
-                    _eventTypes.Remove(eventType);
-                }
-
-                RaiseOnEventRemoved(eventName);
+                _eventTypes.Remove(eventType);
             }
+
+            RaiseOnEventRemoved(eventName);
         }
     }
 
@@ -93,9 +90,10 @@ public class InMemoryEventBusSubscriptionManager : IEventBusSubscriptionManager
     {
         if (!HasSubscriptionForEvent(eventName))
         {
-            return null;
+            throw new EventBusSubscriptionException($"No subscription for event {eventName} exists");
         }
-        return _handlers[eventName].SingleOrDefault(s => s.HandlerType == handlerType);
+        return _handlers[eventName].SingleOrDefault(s => s.HandlerType == handlerType) 
+               ?? throw new EventBusSubscriptionException($"Handler Type {handlerType.Name} not found for '{eventName}'");
     }
 
     public bool HasSubscriptionForEvent<T>() where T : IntegrationEvent
@@ -104,10 +102,10 @@ public class InMemoryEventBusSubscriptionManager : IEventBusSubscriptionManager
         return HasSubscriptionForEvent(key);
     }
     public bool HasSubscriptionForEvent(string eventName) => _handlers.ContainsKey(eventName);
-    public Type GetEventTypeByName(string eventName) => _eventTypes.SingleOrDefault(t => t.Name == eventName);
+    public Type GetEventTypeByName(string eventName) => _eventTypes.SingleOrDefault(t => t.Name == eventName) ?? throw new EventBusSubscriptionException($"Event {eventName} not found");
     public string GetEventKey<T>()
     {
         string eventName = typeof(T).Name;
-        return eventNameGetter(eventName);
+        return _eventNameGetter(eventName);
     }
 }

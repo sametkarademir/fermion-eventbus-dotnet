@@ -7,19 +7,19 @@ namespace Fermion.EventBus.Base.Events;
 
 public abstract class BaseEventBus : IEventBus
 {
-    public readonly IServiceProvider ServiceProvider;
-    public readonly IEventBusSubscriptionManager SubsManager;
+    private readonly IServiceProvider _serviceProvider;
+    protected readonly IEventBusSubscriptionManager SubsManager;
 
-    public EventBusConfig EventBusConfig { get; set; }
+    protected EventBusConfig EventBusConfig { get; set; }
 
-    public BaseEventBus(EventBusConfig config, IServiceProvider serviceProvider)
+    protected BaseEventBus(EventBusConfig config, IServiceProvider serviceProvider)
     {
         EventBusConfig = config;
-        ServiceProvider = serviceProvider;
+        _serviceProvider = serviceProvider;
         SubsManager = new InMemoryEventBusSubscriptionManager(ProcessEventName);
     }
 
-    public virtual string ProcessEventName(string eventName)
+    protected string ProcessEventName(string eventName)
     {
         if (EventBusConfig.DeleteEventPrefix)
         {
@@ -34,46 +34,42 @@ public abstract class BaseEventBus : IEventBus
 
         return eventName;
     }
-    public virtual string GetSubName(string eventName)
+    
+    protected string GetSubName(string eventName)
     {
         return $"{EventBusConfig.SubscriberClientAppName}.{ProcessEventName(eventName)}";
     }
+    
     public virtual void Dispose()
     {
         EventBusConfig = null;
         SubsManager.Clear();
     }
-    public async Task<bool> ProcessEvent(string eventName, string message)
+
+    protected async Task ProcessEvent(string eventName, string message)
     {
         eventName = ProcessEventName(eventName);
-        var processed = false;
         if (SubsManager.HasSubscriptionForEvent(eventName))
         {
             var subscriptions = SubsManager.GetHandlersForEvent(eventName);
-            using (var scope = ServiceProvider.CreateScope())
+            using var scope = _serviceProvider.CreateScope();
+            foreach (var subscription in subscriptions)
             {
-                foreach (var subscription in subscriptions)
+                var handler = _serviceProvider.GetService(subscription.HandlerType);
+                if (handler == null)
                 {
-                    var handler = ServiceProvider.GetService(subscription.HandlerType);
-                    if (handler == null)
-                    {
-                        continue;
-                    }
-
-                    var eventType =
-                        SubsManager.GetEventTypeByName(
-                            $"{EventBusConfig.EventNamePrefix}{eventName}{EventBusConfig.EventNameSuffix}");
-                    var integrationEvent = JsonConvert.DeserializeObject(message, eventType);
-
-                    var concreteType = typeof(IIntegrationEventHandler<>).MakeGenericType(eventType);
-                    await (Task)concreteType.GetMethod("Handle").Invoke(handler, new object[] { integrationEvent });
+                    continue;
                 }
+
+                var eventType =
+                    SubsManager.GetEventTypeByName(
+                        $"{EventBusConfig.EventNamePrefix}{eventName}{EventBusConfig.EventNameSuffix}");
+                var integrationEvent = JsonConvert.DeserializeObject(message, eventType);
+
+                var concreteType = typeof(IIntegrationEventHandler<>).MakeGenericType(eventType);
+                await (Task)concreteType.GetMethod("Handle").Invoke(handler, [integrationEvent]);
             }
-
-            processed = true;
         }
-
-        return processed;
     }
 
     public abstract void Publish(IntegrationEvent @event);

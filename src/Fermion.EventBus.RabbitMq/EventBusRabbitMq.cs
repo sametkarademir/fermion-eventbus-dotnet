@@ -62,6 +62,8 @@ public class EventBusRabbitMq : BaseEventBus
         _logger.LogInformation("EventBusRabbitMq initialization completed successfully");
     }
 
+    public RabbitMqPersistentConnection GetPersistentConnection() => _persistentConnection;
+    
     private void SubsManagerOnOnEventRemoved(object? sender, string eventName)
     {
         _logger.LogInformation("Event removed from subscription manager: {EventName}", eventName);

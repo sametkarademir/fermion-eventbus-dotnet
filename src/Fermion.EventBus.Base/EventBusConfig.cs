@@ -4,7 +4,6 @@ public class EventBusConfig
 {
     public int ConnectionRetryCount { get; set; } = 5;
     public string DefaultTopicName { get; set; } = "DefaultTopicName";
-    public string EventBusConnectionString { get; set; } = String.Empty;
     public string SubscriberClientAppName { get; set; } = String.Empty;
     public string EventNamePrefix { get; set; } = string.Empty;
     public string EventNameSuffix { get; set; } = "IntegrationEvent";
@@ -30,13 +29,7 @@ public class EventBusConfig
             _config.DefaultTopicName = topicName;
             return this;
         }
-
-        public Builder WithEventBusConnectionString(string connectionString)
-        {
-            _config.EventBusConnectionString = connectionString;
-            return this;
-        }
-
+        
         public Builder WithSubscriberClientAppName(string appName)
         {
             _config.SubscriberClientAppName = appName;
@@ -80,9 +73,6 @@ public class EventBusConfig
 
     public void Validate()
     {
-        if (string.IsNullOrEmpty(EventBusConnectionString) && Connection == null)
-            throw new ArgumentException("Either ConnectionString or Connection must be provided");
-
         if (string.IsNullOrEmpty(SubscriberClientAppName))
             throw new ArgumentException("SubscriberClientAppName is required");
     }

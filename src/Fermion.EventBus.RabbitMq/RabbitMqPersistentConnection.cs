@@ -1,4 +1,5 @@
 using System.Net.Sockets;
+using Fermion.EventBus.Base.Exceptions;
 using Microsoft.Extensions.Logging;
 using Polly;
 using RabbitMQ.Client;
@@ -31,7 +32,7 @@ public class RabbitMqPersistentConnection : IDisposable
         if (!IsConnected)
         {
             _logger.LogError("Cannot create model: connection is not established.");
-            throw new InvalidOperationException("No RabbitMQ connections are available to perform this action");
+            throw new EventBusConnectionException("No RabbitMQ connections are available to perform this action");
         }
 
         try
@@ -82,7 +83,7 @@ public class RabbitMqPersistentConnection : IDisposable
                     else
                     {
                         _logger.LogError("ConnectionFactory is null, cannot create connection");
-                        throw new InvalidOperationException("ConnectionFactory must not be null");
+                        throw new EventBusConnectionException("ConnectionFactory must not be null");
                     }
                 });
             }
